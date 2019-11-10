@@ -2,12 +2,15 @@
 
 """
 import sys
-sys.path.insert(1, '/home/dc/projects/python/twitter')
-from SpotifyAuth import *
+sys.path.insert(1, '/home/dc/projects/python/')
+from kmeans import Kmeans
+from SpotifyAuth import bearAuthHeader
 from requests import get
 from json import loads
-from audioFeatures import ignoreFeatures, listFeatures
+from audioFeatures import ignoreFeatures, listFeatures, maxValues
 from math import ceil
+import numpy as np
+from time import time
 
 class SpotifyRequest:
     BASE = "https://api.spotify.com/v1/"
@@ -66,10 +69,28 @@ class SpotifyRequest:
         return result
 
 if __name__ == "__main__":
+    print("START")
+    total = time()
+
+    start = time()
     sp = SpotifyRequest()
-    #print(get("https://api.spotify.com/v1/audio-features", 
-    #params={"ids":",".join(["5FI7poC3O5ELlYLmUFQ5sC","682TDtMAq9UcKN0QqVN019"])}, headers=sp.auth).text)
-    feats = sp.audioFeaturesPruned(["5FI7poC3O5ELlYLmUFQ5sC","682TDtMAq9UcKN0QqVN019"])
-    print(feats)
+    print("Time to create Requester (easy): {}".format(time()-start))
+
+    PLAY_LIST_ID = "30Ljdq1ZGekPrqsNPKKWZH"
+    start = time()
+    allSongsID = sp.entirePlaylistSongs(PLAY_LIST_ID)
+    print("Time to get all song ids of the playlist: {}".format(time()-start))
+
+    start = time()
+    feats = sp.audioFeaturesPruned(allSongsID)
+    print("Time to get all needed audio features of all songs of interest: {}".format(time()-start))
+    
     featList = listFeatures(feats)
-    print(featList)
+
+    start = time()
+    kResult = Kmeans.runKmeansTuned(np.array(featList), PRINT=1, RAN=maxValues())
+    print("Centroids: ", kResult[0])
+    print("Labels: ", kResult[1])
+    print("Time to cluster: {}".format(time()-start))
+    
+    print("Total time til completion: {}".format(time()-total))

@@ -5,7 +5,7 @@
 featureRange = {
     "danceability":(0,1),
     "energy":(0,1),
-    "key":(-1,10),
+    "key":(-1,8),
     "loudness":(-60,0),
     "mode":(0,1),
     "speechiness":(0,1),
@@ -14,8 +14,8 @@ featureRange = {
     "liveness":(0,1),
     "valence":(0,1),
     "tempo":(0,250),
-    "time_signature":(0,8),
-    "duration_ms":(0,2*60*60*1000)
+    "time_signature":(0,6),
+    #"duration_ms":(0,2*60*60*1000)
 }
 
 ignoreFeatures = [
@@ -27,6 +27,9 @@ def maxValues():
 
 def minValues():
     return [featureRange[key][0] for key in featureRange.keys()]
+
+def rangeValues():
+    return [featureRange[key] for key in featureRange.keys()]
 
 def listFeatures(featureDictList):
     """

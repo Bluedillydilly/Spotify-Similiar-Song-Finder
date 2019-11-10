@@ -33,7 +33,6 @@ def getBearerToken():
 
     params['Authorization'] = 'Basic ' + base64_encoded_bearer_cred.decode(encoding='utf-8')
     req = requests.post('https://accounts.spotify.com/api/token', data=body, headers=params)
-    print(req.text)
     return "Bearer "+ loads(req.text)['access_token']
 
 
