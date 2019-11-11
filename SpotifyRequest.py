@@ -69,6 +69,9 @@ class SpotifyRequest:
         return result
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("usage: python3 SpotifyRequest.py PLAYLIST_ID")
+        exit()
     print("START")
     total = time()
 
@@ -76,7 +79,7 @@ if __name__ == "__main__":
     sp = SpotifyRequest()
     print("Time to create Requester (easy): {}".format(time()-start))
 
-    PLAY_LIST_ID = "30Ljdq1ZGekPrqsNPKKWZH"
+    PLAY_LIST_ID = sys.argv[1]
     start = time()
     allSongsID = sp.entirePlaylistSongs(PLAY_LIST_ID)
     print("Time to get all song ids of the playlist: {}".format(time()-start))

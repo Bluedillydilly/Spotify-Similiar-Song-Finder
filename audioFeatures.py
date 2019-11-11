@@ -14,7 +14,7 @@ featureRange = {
     "liveness":(0,1),
     "valence":(0,1),
     "tempo":(0,250),
-    "time_signature":(0,6),
+    #"time_signature":(0,6),
     #"duration_ms":(0,2*60*60*1000)
 }
 
