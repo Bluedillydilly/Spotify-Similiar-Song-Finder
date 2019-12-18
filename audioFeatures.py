@@ -1,48 +1,41 @@
 """
-
+	Functions related to the audio features of tracks.
+	Functions like ranking of songs, etc.
 """
+from audioFeaturesHelper import listFeatures, featureRange
+from math import floor, log10
 
-featureRange = {
-    "danceability":(0,1),
-    "energy":(0,1),
-    "key":(-1,8),
-    "loudness":(-60,0),
-    "mode":(0,1),
-    "speechiness":(0,1),
-    "acousticness":(0,1),
-    "instrumentalness":(0,1),
-    "liveness":(0,1),
-    "valence":(0,1),
-    "tempo":(0,250),
-    #"time_signature":(0,6),
-    #"duration_ms":(0,2*60*60*1000)
-}
+def topN(songs, feat: str, N=5, bottom=False):
+	"""
+		Params:
+			songs: feature, Name tuple list of all songs of interest
+			feat: feature of interest
+			N: top N songs for the feat
+	"""
+	fi = list(featureRange.keys()).index(feat)
+	songs.sort(reverse=not bottom,
+		key= lambda tup: tup[0][fi])
+	
+	print("-"*75)
+	p = "Bottom" if bottom else "Top"
+	print(p, len(songs[:N]), "songs for", feat+":")
+	for i in range(len(songs[:N])):
+		print(str(i+1)+":", songs[i][1] + " "*(56-floor(log10(i+1))-len(songs[i][1])), 
+			songs[i][0][fi])
 
-ignoreFeatures = [
-    "type", "uri", "track_href", "analysis_url"
-]
+if __name__ == "__main__":
+	from SpotifyRequest import SpotifyRequester
 
-def maxValues():
-    return [featureRange[key][1] for key in featureRange.keys()]
+	PL_ID = "30Ljdq1ZGekPrqsNPKKWZH"
+	PL_ID = "5EmJ0c7w1QJbJSZe1VTYWG"
 
-def minValues():
-    return [featureRange[key][0] for key in featureRange.keys()]
+	sp = SpotifyRequester()
+	songIDs = sp.entirePlaylistSongs(PL_ID)
+	songFeats = sp.audioFeaturesPruned(songIDs)
+	featList = listFeatures(songFeats)
+	
+	paired = list(zip(featList,sp.songName(songIDs)))
+	for f in featureRange.keys():
+		topN(paired, f)
 
-def rangeValues():
-    return [featureRange[key] for key in featureRange.keys()]
-
-def listFeatures(featureDictList):
-    """
-    Parameters:
-        featureDictList - a list of dictionary objects that contain audioFeatures of a song.
-
-    Output:
-        2d array of features. List of lists of song features
-    """
-    allFeatures = []
-    for song in featureDictList:
-        songInfo = []
-        for key in featureRange.keys():
-            songInfo.append(song[key])
-        allFeatures.append(songInfo)
-    return allFeatures
+	
