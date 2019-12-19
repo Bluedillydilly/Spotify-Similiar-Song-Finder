@@ -84,9 +84,7 @@ def dist(point, centroid):
     """
         Euclidean distance of point from centroid.
     """
-    if np.linalg.norm(point-centroid) < 0:
-        print("WARNING",point, centroid)
-    return np.linalg.norm(point-centroid)
+    return np.linalg.norm(np.array(point)-np.array(centroid))
 
 
 def kmeansTunedThread(training, k, WCSSk, PRINT=0, RAN=0):
