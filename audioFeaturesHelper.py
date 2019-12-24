@@ -18,9 +18,7 @@ featureRange = {
     #"duration_ms":(0,2*60*60*1000)
 }
 
-ignoreFeatures = [
-    "type", "uri", "track_href", "analysis_url"
-]
+ignoreFeatures = [ "type", "uri", "track_href", "analysis_url" ]
 
 def maxValues():
     return [featureRange[key][1] for key in featureRange.keys()]
@@ -46,3 +44,12 @@ def listFeatures(featureDictList):
             songInfo.append(song[key])
         allFeatures.append(songInfo)
     return allFeatures
+
+def normVect():
+    ma = maxValues()
+    mi = minValues()
+    return [1+ma[i]-mi[i] for i in range(len(ma))]    
+
+def featNorm(featList):
+    nv = normVect()
+    return [ featList[i]/nv[i] for i in range(len(featList)) ]
